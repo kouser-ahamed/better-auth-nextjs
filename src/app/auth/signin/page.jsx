@@ -12,17 +12,17 @@ import {
   TextField,
 } from "@heroui/react";
 
-const SignUpPage = () => {
+const SignInPage = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
     const userData = Object.fromEntries(formData.entries());
 
-    const { data, error } = await authClient.signUp.email({
-      name: userData.name,
+    const { data, error } = await authClient.signIn.email({
       email: userData.email,
       password: userData.password,
+      rememberMe: true,
       callbackURL: "/",
     });
 
@@ -31,17 +31,14 @@ const SignUpPage = () => {
       alert(error.message);
       return;
     }
-    if (data) {
-      alert("Sign up successful! Please check your email for verification.");
-    }
 
-    console.log("Sign up response:", { data, error });
+    console.log("Sign in success:", data);
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div>
-        <h2 className="text-xl font-semibold mb-4">Please Sign Up</h2>
+        <h2 className="text-xl font-semibold mb-4">Please Sign In</h2>
 
         <Form
           method="post"
@@ -49,52 +46,15 @@ const SignUpPage = () => {
           className="flex w-96 flex-col gap-4"
           onSubmit={onSubmit}
         >
-          {/* NAME */}
-          <TextField
-            name="name"
-            isRequired
-            validate={(value) => {
-              if (value.length < 3) return "Name must be at least 3 characters";
-              return null;
-            }}
-          >
-            <Label>Name</Label>
-            <Input placeholder="Your Name" />
-            <FieldError />
-          </TextField>
-
           {/* EMAIL */}
-          <TextField
-            name="email"
-            type="email"
-            isRequired
-            validate={(value) => {
-              if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
-                return "Please enter a valid email address";
-              }
-              return null;
-            }}
-          >
+          <TextField name="email" type="email" isRequired>
             <Label>Email</Label>
             <Input placeholder="Your Email" />
             <FieldError />
           </TextField>
 
           {/* PASSWORD */}
-          <TextField
-            name="password"
-            type="password"
-            isRequired
-            validate={(value) => {
-              if (value.length < 8)
-                return "Password must be at least 8 characters";
-              if (!/[A-Z]/.test(value))
-                return "Must contain uppercase letter";
-              if (!/[0-9]/.test(value))
-                return "Must contain a number";
-              return null;
-            }}
-          >
+          <TextField name="password" type="password" isRequired>
             <Label>Password</Label>
             <Input placeholder="Enter your password" />
             <Description>
@@ -120,4 +80,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default SignInPage;
